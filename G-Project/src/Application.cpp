@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Shader.h"
+#include "stb_image.h"
 
 using namespace std;
 
@@ -68,14 +69,20 @@ int main(void)
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	Debug.Log("Maximum nr of vertex attributes supported: " + to_string(nrAttributes));
 
+	//float vertices[] = {
+	//	0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // 右下
+	//	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 左下
+	//	0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // 顶部
+	//};
+
 	float vertices[] = {
-		0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // 右下
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 左下
-		0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // 顶部
+		//     ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
+			 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // 右上
+			 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // 右下
+			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // 左下
+			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // 左上
 	};
 
-	int stride = 3;
-	int verticeCount = 4;
 	//float vertices[] = {
 	//	-0.5f, -0.5f,
 	//	 0.5f, -0.5f,
@@ -85,10 +92,9 @@ int main(void)
 	//	-0.5f,  0.0f,*/
 	//};
 
-	int indexCount = 3;
 	unsigned int indices[] = {
 		0, 1, 2,
-		//2, 3, 0,
+		2, 3, 0,
 	};
 
 	unsigned int VAO;
@@ -109,15 +115,35 @@ int main(void)
 
 	// vertex attribute
 	// position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
 	// color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	// texture
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	// shader
 	Shader shader("Resources/Shaders/Basic.shader");
 	shader.Use();
+
+	// Texture
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	// 为当前绑定的纹理对象设置环绕、过滤方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("Resources/Textures/MoveChainSystem.png", &width, &height, &nrChannels, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	stbi_image_free(data);
 
 	// Wireframe Mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -134,7 +160,7 @@ int main(void)
 
 		float time = glfwGetTime();
 		float greenValue = (sin(time) / 2.0f) + 0.5f;
-		shader.SetFloat4("OurColor", 0.0f, greenValue, 0.0f, 1.0f);
+		//shader.SetFloat4("OurColor", 0.0f, greenValue, 0.0f, 1.0f);
 		
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / (sizeof(unsigned int)), GL_UNSIGNED_INT, 0);
 
