@@ -1,30 +1,31 @@
 #shader vertex
 #version 330 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aColor;
-layout(location = 2) in vec2 aTexCoord;
 
-out vec4 vertexColor;
-out vec2 TexCoord;
+layout(location = 0)in vec2 position;
+layout(location = 1)in vec2 textCoord;
+
+out vec2 v_TextCoord;
+
+uniform mat4 u_MVP;
 
 void main()
 {
-	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-	vertexColor = vec4(aColor, 1.0f);
-	TexCoord = aTexCoord;
-}
+	gl_Position = u_MVP * vec4(position.x, position.y, 0, 1);
+	v_TextCoord = textCoord;
+};
 
 #shader fragment
 #version 330 core
-in vec4 vertexColor; // 从顶点着色器传来的输入变量（名称相同、类型相同）
-in vec2 TexCoord;
 
-out vec4 FragColor;
+layout(location = 0)out vec4 color;
 
-uniform vec4 OurColor;
-uniform sampler2D ourTexture;
+in vec2 v_TextCoord;
+
+uniform vec4 u_Color;
+uniform sampler2D u_Texture;
 
 void main()
 {
-	FragColor = texture(ourTexture, TexCoord);
-}
+	vec4 textColor = texture(u_Texture, v_TextCoord);
+	color = textColor;
+};

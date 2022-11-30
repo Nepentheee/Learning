@@ -4,8 +4,17 @@
 #include "DebugLog.h"
 #include <string>
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include "Shader.h"
 #include "stb_image.h"
+#include "Renderer.h"
+
+#include "Tests/TestClearColor.h"
+#include "Tests/TestTexture2D.h"
+#include "Tests/TestBatchRender.h"
 
 using namespace std;
 
@@ -63,18 +72,31 @@ int main(void)
 	// 渲染窗口大小
 	glViewport(0, 0, 800, 640);
 
+	// 每帧渲染
+	glfwSwapInterval(1);
+
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	Debug.Log("Maximum nr of vertex attributes supported: " + to_string(nrAttributes));
 
-	//float vertices[] = {
-	//	0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // 右下
-	//	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 左下
-	//	0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // 顶部
-	//};
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui::StyleColorsDark();
+	ImGui_ImplOpenGL3_Init("#version 330");
 
+	Renderer renderer;
+
+	test::Test* currentTest = nullptr;
+	test::TestMenu* testMenu = new test::TestMenu(currentTest);
+	currentTest = testMenu;
+
+	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+	testMenu->RegisterTest<test::TestBatchRender>("Batch Render");
+
+	/*
 	float vertices[] = {
 		//     ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
 			 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // 右上
@@ -82,15 +104,6 @@ int main(void)
 			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // 左下
 			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // 左上
 	};
-
-	//float vertices[] = {
-	//	-0.5f, -0.5f,
-	//	 0.5f, -0.5f,
-	//	 0.5f,  0.5f,
-	//	-0.5f,  0.5f,
-	//	/*-0.5f,  0.5f,
-	//	-0.5f,  0.0f,*/
-	//};
 
 	unsigned int indices[] = {
 		0, 1, 2,
@@ -126,7 +139,7 @@ int main(void)
 
 	// shader
 	Shader shader("Resources/Shaders/Basic.shader");
-	shader.Use();
+	shader.Bind();
 
 	// Texture
 	unsigned int texture;
@@ -144,6 +157,7 @@ int main(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	stbi_image_free(data);
+	*/
 
 	// Wireframe Mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -154,22 +168,56 @@ int main(void)
 	{
 		processInput(window);
 
-		/* Render here */
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		renderer.Clear();
 
-		float time = glfwGetTime();
-		float greenValue = (sin(time) / 2.0f) + 0.5f;
-		//shader.SetFloat4("OurColor", 0.0f, greenValue, 0.0f, 1.0f);
-		
-		glDrawElements(GL_TRIANGLES, sizeof(indices) / (sizeof(unsigned int)), GL_UNSIGNED_INT, 0);
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
-		/* Swap front and back buffers */
+		if (currentTest)
+		{
+			currentTest->OnUpdate(0.0f);
+			currentTest->OnRender();
+			ImGui::Begin("Test");
+			if (currentTest != testMenu && ImGui::Button("<-"))
+			{
+				delete currentTest;
+				currentTest = testMenu;
+			}
+			currentTest->OnImGuiRender();
+			ImGui::End();
+		}
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
 		glfwPollEvents();
+
+		//float time = glfwGetTime();
+		//float greenValue = (sin(time) / 2.0f) + 0.5f;
+		////shader.SetFloat4("OurColor", 0.0f, greenValue, 0.0f, 1.0f);
+		//
+		//glDrawElements(GL_TRIANGLES, sizeof(indices) / (sizeof(unsigned int)), GL_UNSIGNED_INT, 0);
+
+		///* Swap front and back buffers */
+		//glfwSwapBuffers(window);
+
+		///* Poll for and process events */
+		//glfwPollEvents();
 	}
+
+	if (currentTest != testMenu)
+	{
+		delete testMenu;
+	}
+	delete currentTest;
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(window);
 
 	glfwTerminate();
 	return 0;
