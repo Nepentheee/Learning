@@ -1415,6 +1415,7 @@
     <None Include="Dependencies\glm\gtx\wrap.inl">
       <Filter>头文件</Filter>
     </None>
+    <None Include="Resources\Shaders\BatchRender.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\textures2.png">

@@ -17,9 +17,9 @@ public:
 
 	void Bind() const;
 	void SetBool(const string& name, bool value);
-	void SetInt(const string& name, int value);
-	void SetFloat4(const string& name, float v1, float v2, float v3, float v4);
-	void SetFloat1(const string& name, float v1);
+	void SetUnitform1i(const string& name, int value);
+	void SetUniform4f(const string& name, float v1, float v2, float v3, float v4);
+	void SetUniform1f(const string& name, float v1);
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 	void SetUniform1iv(const std::string& name, int count, int* value);
 private:

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Test.h"
-
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "Texture.h"
@@ -15,6 +14,7 @@ namespace test
 	class TestBatchRender : public Test
 	{
 	private:
+		std::unique_ptr<Renderer> m_Renderer;
 		std::unique_ptr<VertexArray> m_VAO;
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;

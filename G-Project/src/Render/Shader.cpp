@@ -46,17 +46,17 @@ void Shader::SetBool(const string& name, bool value)
 	glUniform1i(glGetUniformLocation(m_RenderID, name.c_str()), (int)value);
 }
 
-void Shader::SetInt(const string& name, int value)
+void Shader::SetUnitform1i(const string& name, int value)
 {
 	glUniform1i(glGetUniformLocation(m_RenderID, name.c_str()), value);
 }
 
-void Shader::SetFloat4(const string& name, float v1, float v2, float v3, float v4)
+void Shader::SetUniform4f(const string& name, float v1, float v2, float v3, float v4)
 {
 	glUniform4f(glGetUniformLocation(m_RenderID, name.c_str()), v1, v2, v3, v4);
 }
 
-void Shader::SetFloat1(const string& name, float v1)
+void Shader::SetUniform1f(const string& name, float v1)
 {
 	glUniform1f(glGetUniformLocation(m_RenderID, name.c_str()), v1);
 }

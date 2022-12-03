@@ -25,16 +25,6 @@ namespace test
 			2, 3, 0
 		};
 
-		// Blending
-		GLCall(glEnable(GL_BLEND));
-		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-		// 为当前绑定的纹理对象设置环绕、过滤方式
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		m_VAO = std::make_unique<VertexArray>();
 
 		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, sizeof(positions));
@@ -47,10 +37,10 @@ namespace test
 
 		m_Shader = std::make_unique<Shader>("Resources/Shaders/Basic.shader");
 		m_Shader->Bind();
-		m_Shader->SetFloat4("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-		m_Shader->SetFloat1("u_Texture", 0);
+		m_Shader->SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+		m_Shader->SetUniform1f("u_Texture", 0);
 
-		m_Texture = std::make_unique<Texture>("Resources/textures/MoveChainSystem.png");
+		m_Texture = std::make_unique<Texture>("Resources/textures/IMG_1223.JPG");
 	}
 
 	TestTexture2D::~TestTexture2D()
@@ -63,10 +53,8 @@ namespace test
 
 	void TestTexture2D::OnRender()
 	{
-		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
-
 		Renderer renderer;
+		renderer.Clear();
 
 		m_Texture->Bind();
 

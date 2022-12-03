@@ -614,6 +614,7 @@
     <None Include="Dependencies\glm\gtx\vector_query.inl" />
     <None Include="Dependencies\glm\gtx\wrap.inl" />
     <None Include="Resources\Shaders\Basic.shader" />
+    <None Include="Resources\Shaders\BatchRender.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\MoveChainSystem.png" />

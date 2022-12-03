@@ -23,8 +23,6 @@ bool GLLogCall(const char* function, const char* file, int line);
 class Renderer
 {
 public:
-    const string ShaderPath = "Resources/Shaders/Basic.shader";
-
     void Clear() const;
     void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 };

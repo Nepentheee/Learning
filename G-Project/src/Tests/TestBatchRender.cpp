@@ -31,12 +31,9 @@ namespace test
             4, 5, 6, 6, 7, 4
         };
 
-        GLCall(glEnable(GL_BLEND));
-        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
         m_VAO = std::make_unique<VertexArray>();
 
-        m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 11 * 8 * sizeof(float));
+        m_VertexBuffer = std::make_unique<VertexBuffer>(positions, sizeof(positions));
         VertexBufferLayout layout;
         layout.Push<float>(4); // 坐标 x, y, z, w  w 齐次坐标, 对xyz进行缩放
         layout.Push<float>(4); // 颜色数据
@@ -46,17 +43,16 @@ namespace test
 
         m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 12);
 
-        m_Shader = std::make_unique<Shader>("res/shaders/Batch.shader");
-        m_Shader->Bind();
+		m_Shader = std::make_unique<Shader>("Resources/Shaders/BatchRender.shader");
 
-        m_Texture[0] = std::make_unique<Texture>("res/textures/ChernoLogo.png");
-        m_Texture[1] = std::make_unique<Texture>("res/textures/HazelLogo.png");
-        for (size_t i = 0; i < 2; i++)
-        {
-            m_Texture[i]->Bind(i);
-        }
-        int samplers[2] = { 0, 1 };
-        m_Shader->SetUniform1iv("u_Textures", 2, samplers);
+		m_Texture[0] = std::make_unique<Texture>("Resources/textures/IMG_1223.JPG");
+		m_Texture[1] = std::make_unique<Texture>("Resources/textures/IMG_1421.JPG");
+		for (size_t i = 0; i < 2; i++)
+		{
+			m_Texture[i]->Bind(i);
+		}
+
+        m_Renderer = std::make_unique<Renderer>();
 	}
 
 	TestBatchRender::~TestBatchRender()
@@ -69,16 +65,14 @@ namespace test
 
 	void TestBatchRender::OnRender()
 	{
-		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        m_Renderer->Clear();
 
-        Renderer renderer; // 每帧这个renderer都要不一样嘛
-        glm::mat4 mvp = m_Proj * m_View;
+		glm::mat4 mvp = m_Proj * m_View;
+		int samplers[2] = { 0, 1 };
+		m_Shader->SetUniform1iv("textures", 2, samplers);
+		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
-        m_Shader->Bind();
-        m_Shader->SetUniformMat4f("u_MVP", mvp);
-
-        renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+        m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 	}
 
 	void TestBatchRender::OnImGuiRender()
