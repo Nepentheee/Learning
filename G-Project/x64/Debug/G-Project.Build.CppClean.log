@@ -1,15 +1,15 @@
 i:\ugit\learning\g-project\x64\debug\vc142.pdb
 i:\ugit\learning\g-project\x64\debug\vc142.idb
-i:\ugit\learning\g-project\x64\debug\testtexture2d.obj
-i:\ugit\learning\g-project\x64\debug\testclearcolor.obj
-i:\ugit\learning\g-project\x64\debug\testbatchrender.obj
+i:\ugit\learning\g-project\x64\debug\testcamera.obj
 i:\ugit\learning\g-project\x64\debug\test.obj
 i:\ugit\learning\g-project\x64\debug\vertexbuffer.obj
 i:\ugit\learning\g-project\x64\debug\stbread.obj
 i:\ugit\learning\g-project\x64\debug\vertexarray.obj
 i:\ugit\learning\g-project\x64\debug\texture.obj
 i:\ugit\learning\g-project\x64\debug\shader.obj
+i:\ugit\learning\g-project\x64\debug\renderer.obj
 i:\ugit\learning\g-project\x64\debug\indexbuffer.obj
+i:\ugit\learning\g-project\x64\debug\camera.obj
 i:\ugit\learning\g-project\x64\debug\application.obj
 i:\ugit\learning\g-project\x64\debug\imgui_widgets.obj
 i:\ugit\learning\g-project\x64\debug\imgui_tables.obj
@@ -19,6 +19,8 @@ i:\ugit\learning\g-project\x64\debug\imgui_draw.obj
 i:\ugit\learning\g-project\x64\debug\imgui_demo.obj
 i:\ugit\learning\g-project\x64\debug\imgui.obj
 i:\ugit\learning\g-project\x64\debug\glm.obj
+i:\ugit\learning\g-project\x64\debug\testtexture2d.obj
+i:\ugit\learning\g-project\x64\debug\testclearcolor.obj
 i:\ugit\learning\g-project\x64\debug\g-project.tlog\cl.command.1.tlog
 i:\ugit\learning\g-project\x64\debug\g-project.tlog\cl.read.1.tlog
 i:\ugit\learning\g-project\x64\debug\g-project.tlog\cl.write.1.tlog

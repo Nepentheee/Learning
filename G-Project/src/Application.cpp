@@ -15,13 +15,14 @@
 #include "Tests/TestClearColor.h"
 #include "Tests/TestTexture2D.h"
 #include "Tests/TestBatchRender.h"
+#include "Tests/TestCameram.h"
 
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
-	cout << width << "," << height << endl;
+	//cout << width << "," << height << endl;
 }
 
 void processInput(GLFWwindow* window)
@@ -41,8 +42,6 @@ int main(void)
 	if (!glfwInit())
 		return -1;
 
-	DebugLog Debug;
-
 	//OpenGL 3.3 Core_Profile
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -50,7 +49,7 @@ int main(void)
 
 	//cout << "Version: " << glfwGetVersionString() << endl;
 
-	Debug.Log("Version: " + string(glfwGetVersionString()));
+	Log("Version: " + string(glfwGetVersionString()));
 
 	/* Create a windowed mode window and its OpenGL context */
 	GLFWwindow* window = glfwCreateWindow(960, 640, "Hello World", NULL, NULL);
@@ -70,7 +69,7 @@ int main(void)
 	}
 
 	// äÖÈ¾´°¿Ú´óÐ¡
-	glViewport(0, 0, 800, 640);
+	glViewport(0, 0, ScreenWidth, ScreenHeight);
 
 	// EnableBlend
 	GLCall(glEnable(GL_BLEND));
@@ -83,7 +82,7 @@ int main(void)
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	Debug.Log("Maximum nr of vertex attributes supported: " + to_string(nrAttributes));
+	Log("Maximum nr of vertex attributes supported: " + to_string(nrAttributes));
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -99,6 +98,7 @@ int main(void)
 	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 	testMenu->RegisterTest<test::TestBatchRender>("Batch Render");
+	testMenu->RegisterTest<test::TestCamera>("Test Camera");
 
 	// Wire frame Mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -8,8 +8,8 @@
 
 namespace test
 {
-	TestTexture2D::TestTexture2D()
-		:m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 720.0f, -1.0f, 1.0f)),
+	TestTexture2D::TestTexture2D() :
+		m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 720.0f, -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0))),
 		m_TranslationA(glm::vec3(200, 200, 0)), m_TranslationB(glm::vec3(400, 200, 0))
 	{
@@ -35,12 +35,15 @@ namespace test
 
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
-		m_Shader = std::make_unique<Shader>("Resources/Shaders/Basic.shader");
+		m_Shader = std::make_unique<Shader>(BasicShaderPath);
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
 		m_Shader->SetUniform1f("u_Texture", 0);
 
-		m_Texture = std::make_unique<Texture>("Resources/textures/IMG_1223.JPG");
+		m_Texture = std::make_unique<Texture>(Testure1Path);
+		m_Texture->Bind();
+
+		m_Renderer = std::make_unique<Renderer>();
 	}
 
 	TestTexture2D::~TestTexture2D()
@@ -53,10 +56,7 @@ namespace test
 
 	void TestTexture2D::OnRender()
 	{
-		Renderer renderer;
-		renderer.Clear();
-
-		m_Texture->Bind();
+		m_Renderer->Clear();
 
 		{
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
@@ -65,7 +65,7 @@ namespace test
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 
-			renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 
 		{
@@ -75,7 +75,7 @@ namespace test
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 
-			renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 	}
 

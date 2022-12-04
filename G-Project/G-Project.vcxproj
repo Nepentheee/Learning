@@ -440,6 +440,7 @@
     <ClInclude Include="Dependencies\STB\stb_image.h" />
     <ClInclude Include="GLFW\glfw3.h" />
     <ClInclude Include="GLFW\glfw3native.h" />
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\DebugLog.h" />
     <ClInclude Include="src\Render\IndexBuffer.h" />
     <ClInclude Include="src\Render\Renderer.h" />
@@ -450,6 +451,7 @@
     <ClInclude Include="src\Render\VertexBufferLayout.h" />
     <ClInclude Include="src\Tests\Test.h" />
     <ClInclude Include="src\Tests\TestBatchRender.h" />
+    <ClInclude Include="src\Tests\TestCameram.h" />
     <ClInclude Include="src\Tests\TestClearColor.h" />
     <ClInclude Include="src\Tests\TestTexture2D.h" />
   </ItemGroup>
@@ -463,6 +465,7 @@
     <ClCompile Include="Dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Render\IndexBuffer.cpp" />
     <ClCompile Include="src\Render\Renderer.cpp" />
@@ -473,6 +476,7 @@
     <ClCompile Include="src\Render\VertexBuffer.cpp" />
     <ClCompile Include="src\Tests\Test.cpp" />
     <ClCompile Include="src\Tests\TestBatchRender.cpp" />
+    <ClCompile Include="src\Tests\TestCamera.cpp" />
     <ClCompile Include="src\Tests\TestClearColor.cpp" />
     <ClCompile Include="src\Tests\TestTexture2D.cpp" />
   </ItemGroup>
@@ -617,6 +621,8 @@
     <None Include="Resources\Shaders\BatchRender.shader" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Textures\IMG_1223.jpg" />
+    <Image Include="Resources\Textures\IMG_1421.JPG" />
     <Image Include="Resources\Textures\MoveChainSystem.png" />
     <Image Include="Resources\Textures\textures2.png" />
   </ItemGroup>

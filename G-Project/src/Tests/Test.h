@@ -4,10 +4,22 @@
 #include <functional>
 #include <iostream>
 
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "Texture.h"
+
 namespace test
 {
 	class Test
 	{
+	protected:
+		std::unique_ptr<VertexArray> m_VAO;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Texture> m_Texture;
+		std::unique_ptr<Renderer> m_Renderer;
+
 	public:
 		Test() {}
 		virtual ~Test() {}

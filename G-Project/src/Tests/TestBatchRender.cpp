@@ -43,13 +43,13 @@ namespace test
 
         m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 12);
 
-		m_Shader = std::make_unique<Shader>("Resources/Shaders/BatchRender.shader");
+        m_Shader = std::make_unique<Shader>(BatchRenderShaderPath);
 
-		m_Texture[0] = std::make_unique<Texture>("Resources/textures/IMG_1223.JPG");
-		m_Texture[1] = std::make_unique<Texture>("Resources/textures/IMG_1421.JPG");
+        m_Textures[0] = std::make_unique<Texture>(Testure1Path);
+        m_Textures[1] = std::make_unique<Texture>(Testure2Path);
 		for (size_t i = 0; i < 2; i++)
 		{
-			m_Texture[i]->Bind(i);
+            m_Textures[i]->Bind(i);
 		}
 
         m_Renderer = std::make_unique<Renderer>();

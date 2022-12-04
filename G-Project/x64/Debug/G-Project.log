@@ -1,11 +1,4 @@
-﻿  Application.cpp
-  TestBatchRender.cpp
-I:\UGit\Learning\G-Project\src\Tests\TestBatchRender.cpp(52,24): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
+﻿  TestCamera.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.29.30133\include\memory(3415,1): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
-I:\UGit\Learning\G-Project\src\Tests\TestBatchRender.cpp(36): message : 查看对正在编译的函数 模板 实例化“std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,float(&)[88],size_t,0>(float (&)[88],size_t &&)”的引用
-  TestTexture2D.cpp
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.29.30133\include\memory(3415,1): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
-I:\UGit\Learning\G-Project\src\Tests\TestTexture2D.cpp(30): message : 查看对正在编译的函数 模板 实例化“std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,float(&)[16],size_t,0>(float (&)[16],size_t &&)”的引用
-  正在生成代码...
-LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+I:\UGit\Learning\G-Project\src\Tests\TestCamera.cpp(39): message : 查看对正在编译的函数 模板 实例化“std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,float(&)[16],size_t,0>(float (&)[16],size_t &&)”的引用
   G-Project.vcxproj -> I:\UGit\Learning\G-Project\x64\Debug\G-Project.exe

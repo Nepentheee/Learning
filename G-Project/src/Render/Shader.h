@@ -12,7 +12,7 @@ using namespace std;
 class Shader
 {
 public:
-	Shader(const char* filePath);
+	Shader(const string& filePath);
 	~Shader();
 
 	void Bind() const;

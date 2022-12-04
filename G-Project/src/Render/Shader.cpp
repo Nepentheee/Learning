@@ -1,11 +1,11 @@
 #include "Shader.h"
 
-Shader::Shader(const char* filePath)
+Shader::Shader(const string& filePath)
 {
 	string vertexCode;
 	string fragmentCode;
 
-	GetShaderCodeFromFile(filePath, vertexCode, fragmentCode);
+	GetShaderCodeFromFile((char*) filePath.c_str(), vertexCode, fragmentCode);
 
 	/*cout << vertexCode << endl;
 	cout << fragmentCode << endl;*/
