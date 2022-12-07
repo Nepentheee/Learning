@@ -1,25 +1,12 @@
-#include "TestCameram.h"
+#include "TestLight.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "imgui.h"
 
 namespace test
 {
-	TestCamera::TestCamera() : m_RotateAngle(0), m_GLLineMode(false), m_Color{ 0.2f, 0.3f, 0.8f, 1.0f }
+	TestLight::TestLight() : m_RotateAngle(0), m_LightOffset{ 1,0 }, m_GLLineMode(false), m_Color{ 0.2f, 0.3f, 0.8f, 1.0f }
 	{
-		float value = 1.0f;
-		//float vertices[] = {
-		//	-0.5f * value, -0.5f * value, 0.0f, 0.0f, // 0 左下
-		//	 0.5f * value, -0.5f * value, 1.0f, 0.0f, // 1 右下
-		//	 0.5f * value,  0.5f * value, 1.0f, 1.0f, // 2 右上
-		//	-0.5f * value,  0.5f * value, 0.0f, 1.0f  // 3 左上
-		//};
-
-		/*unsigned int indices[] = {
-			0, 1, 2,
-			2, 3, 0
-		};*/
-
 		float vertices[] = {
 			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -73,50 +60,59 @@ namespace test
 			30, 31, 32, 33, 34, 35,
 		};
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
-
-		VertexBufferLayout layout;
-		layout.Push<float>(3);
-		layout.Push<float>(2);
-
-		m_VAO = std::make_unique<VertexArray>();
-		m_VAO->AddBuffer(*m_VertexBuffer, layout);
-
-		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, sizeof(indices) / sizeof(unsigned int));
-		m_Shader = std::make_unique<Shader>(BasicShaderPath);
-		m_Texture = std::make_unique<Texture>(Testure1Path);
-		m_Renderer = std::make_unique<Renderer>();
+		m_CubeModel = std::make_unique<Model>(vertices, sizeof(vertices), indices, sizeof(indices), BasicShaderPath, Testure1Path);
+		m_LightModel = std::make_unique<Model>(vertices, sizeof(vertices), indices, sizeof(indices), LightShaderPath, "");
+		
 		m_Camera = std::make_unique<Camera>();
+		m_Renderer = std::make_unique<Renderer>();
 	}
 
-	TestCamera::~TestCamera()
+	TestLight::~TestLight()
 	{
 	}
 
-	void test::TestCamera::OnUpdate(float deltaTime)
+	void TestLight::OnUpdate(float deltaTime)
 	{
 	}
 
-	void TestCamera::OnRender()
+	void TestLight::OnRender()
 	{
 		m_Renderer->Clear();
 
-		glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(m_RotateAngle), glm::vec3(1.0f, 0.0f, 0.0f));
 		glm::mat4 view = m_Camera->GetViewMatrix();
 		glm::mat4 proj = m_Camera->GetProjectMatrix();
-		glm::mat4 mvp = proj * view * model;
 
-		m_Shader->SetUniformMat4f("u_MVP", mvp);
-		m_Shader->SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
+		// Draw Cube
+		{
+			glm::mat4 cubeModel = glm::rotate(glm::mat4(1), glm::radians(m_RotateAngle), glm::vec3(1.0f, 0.0f, 0.0f));
+			glm::mat4 mvp = proj * view * cubeModel;
 
-		m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_CubeModel->ModelShader->Bind();
+			m_CubeModel->ModelShader->SetUniformMat4f("u_MVP", mvp);
+			m_CubeModel->ModelShader->SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
+
+			m_Renderer->Draw(*m_CubeModel->VAO, *m_CubeModel->IBO, *m_CubeModel->ModelShader);
+		}
+		
+		// Draw Light
+		{
+			glm::mat4 lightModel = glm::translate(glm::mat4(1), glm::vec3(m_LightOffset[0], m_LightOffset[1], 0)) * glm::scale(glm::mat4(1), glm::vec3(0.3f));
+			glm::mat4 mvp = proj * view * lightModel;
+
+			m_LightModel->ModelShader->Bind();
+			m_LightModel->ModelShader->SetUniformMat4f("u_MVP", mvp);
+			m_LightModel->ModelShader->SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
+
+			m_Renderer->Draw(*m_LightModel->VAO, *m_LightModel->IBO, *m_LightModel->ModelShader);
+		}
 	}
 
-	void TestCamera::OnImGuiRender()
+	void TestLight::OnImGuiRender()
 	{
 		ImGui::Text("Fov %f", m_Camera->GetFov());
 		ImGui::ColorEdit4("ClearColor", m_Color);
 		ImGui::SliderFloat("m_RotateAngle", &m_RotateAngle, -360, 360);
+		ImGui::SliderFloat2("m_LightOffset", m_LightOffset, -2, 2);
 
 		if (ImGui::RadioButton("Orthographic", m_Camera->IsOrthographic()))
 		{
@@ -139,21 +135,19 @@ namespace test
 			m_GLLineMode = false;
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
-
-		// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 
-	void TestCamera::OnProcessInput(int keyCode, float deltaTime)
+	void TestLight::OnProcessInput(int keyCode, float deltaTime)
 	{
 		m_Camera->ProcessKeyboard(keyCode, deltaTime);
 	}
 
-	void TestCamera::OnMouseMove(float xPos, float yPos)
+	void TestLight::OnMouseMove(float xPos, float yPos)
 	{
 		m_Camera->ProcessMouseMove(xPos, yPos);
 	}
 
-	void TestCamera::OnScrollMove(float xOffset, float yOffset)
+	void TestLight::OnScrollMove(float xOffset, float yOffset)
 	{
 		m_Camera->ProcessScrollMove(xOffset, yOffset);
 	}

@@ -16,6 +16,8 @@
 #include "Tests/TestTexture2D.h"
 #include "Tests/TestBatchRender.h"
 #include "Tests/TestCameram.h"
+#include "Tests/TestLight.h"
+
 #include "Application.h"
 
 using namespace std;
@@ -143,6 +145,7 @@ int main(void)
 	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 	testMenu->RegisterTest<test::TestBatchRender>("Batch Render");
 	testMenu->RegisterTest<test::TestCamera>("Test Camera");
+	testMenu->RegisterTest<test::TestLight>("Test Light");
 
 	// Wire frame Mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

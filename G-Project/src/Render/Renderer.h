@@ -25,6 +25,7 @@ bool GLLogCall(const char* function, const char* file, int line);
 const int ScreenWidth = 800;
 const int ScreenHeight = 600;
 const string BasicShaderPath = "Resources/Shaders/Basic.shader";
+const string LightShaderPath = "Resources/Shaders/Light.shader";
 const string BatchRenderShaderPath = "Resources/Shaders/BatchRender.shader";
 const string Testure1Path = "Resources/textures/IMG_1223.JPG";
 const string Testure2Path = "Resources/textures/IMG_1421.JPG";
