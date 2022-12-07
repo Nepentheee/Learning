@@ -51,6 +51,11 @@ void Shader::SetUnitform1i(const string& name, int value)
 	glUniform1i(glGetUniformLocation(m_RenderID, name.c_str()), value);
 }
 
+void Shader::SetUniform4f(const string& name, glm::uvec4 value)
+{
+	glUniform4f(glGetUniformLocation(m_RenderID, name.c_str()), value.x, value.y, value.z, value.w);
+}
+
 void Shader::SetUniform4f(const string& name, float v1, float v2, float v3, float v4)
 {
 	glUniform4f(glGetUniformLocation(m_RenderID, name.c_str()), v1, v2, v3, v4);

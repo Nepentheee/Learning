@@ -16,8 +16,12 @@
 #include "Tests/TestTexture2D.h"
 #include "Tests/TestBatchRender.h"
 #include "Tests/TestCameram.h"
+#include "Application.h"
 
 using namespace std;
+
+float deltaTime = 0.0f;
+test::Test* currentTest = nullptr;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -28,7 +32,38 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
 		glfwSetWindowShouldClose(window, true);
+		return;
+	}
+
+	if (currentTest != nullptr)
+	{
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			currentTest->OnProcessInput(0, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			currentTest->OnProcessInput(1, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			currentTest->OnProcessInput(2, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			currentTest->OnProcessInput(3, deltaTime);
+	}
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (currentTest != nullptr)
+	{
+		currentTest->OnMouseMove(xpos, ypos);
+	}
+}
+
+void scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
+{
+	if (currentTest != nullptr)
+	{
+		currentTest->OnScrollMove(xOffset, yOffset);
+	}
 }
 
 void ChangeInterger(int &a)
@@ -71,7 +106,10 @@ int main(void)
 	// 渲染窗口大小
 	glViewport(0, 0, ScreenWidth, ScreenHeight);
 
-	// EnableBlend
+	// Enable DepthTest
+	glEnable(GL_DEPTH_TEST);
+
+	// Enable Blend
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
@@ -79,6 +117,13 @@ int main(void)
 	glfwSwapInterval(1);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	// 鼠标输入
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetCursorPosCallback(window, mouse_callback);
+	
+	// 滚轮输入
+	glfwSetScrollCallback(window, scroll_callback);
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -91,7 +136,6 @@ int main(void)
 
 	Renderer renderer;
 
-	test::Test* currentTest = nullptr;
 	test::TestMenu* testMenu = new test::TestMenu(currentTest);
 	currentTest = testMenu;
 
@@ -104,9 +148,14 @@ int main(void)
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIll);
 
+	float lastTime = 0.0f;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
+		float currTime = glfwGetTime();
+		deltaTime = currTime - lastTime;
+		lastTime = currTime;
+
 		processInput(window);
 
 		renderer.Clear();
