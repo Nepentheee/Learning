@@ -26,6 +26,8 @@ public:
 
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectMatrix();
+	glm::vec3 GetCameraPos();
+	glm::vec3 GetCameraFront();
 
 	void SetFov(float fov);
 	float GetFov();

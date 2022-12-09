@@ -29,6 +29,16 @@ glm::mat4 Camera::GetProjectMatrix()
 	return proj;
 }
 
+glm::vec3 Camera::GetCameraPos()
+{
+	return m_CameraPos;
+}
+
+glm::vec3 Camera::GetCameraFront()
+{
+	return m_CameraFront;
+}
+
 void Camera::SetFov(float fov)
 {
 	m_Fov = fov;

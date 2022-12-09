@@ -25,10 +25,14 @@ bool GLLogCall(const char* function, const char* file, int line);
 const int ScreenWidth = 800;
 const int ScreenHeight = 600;
 const string BasicShaderPath = "Resources/Shaders/Basic.shader";
-const string LightShaderPath = "Resources/Shaders/Light.shader";
+const string LightCasterShaderPath = "Resources/Shaders/LightCaster.shader";
 const string BatchRenderShaderPath = "Resources/Shaders/BatchRender.shader";
+const string LightingVertexShaderPath = "Resources/Shaders/Lighting.vert";
+const string LightingFragShaderPath = "Resources/Shaders/Lighting.frag";
 const string Testure1Path = "Resources/textures/IMG_1223.JPG";
 const string Testure2Path = "Resources/textures/IMG_1421.JPG";
+const string DiffuseMapPath = "Resources/textures/diffuseMap.png";
+const string SpecularMap = "Resources/textures/specularMap.png";
 
 class Renderer
 {

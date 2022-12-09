@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Test.h"
-#include "Model.h"
+#include "RenderObj.h"
 
 namespace test
 {
@@ -12,9 +12,10 @@ namespace test
 		float m_Color[4];
 		float m_RotateAngle;
 		float m_LightOffset[2];
+		float m_DirectionLight[3];
 
-		std::unique_ptr<Model> m_CubeModel;
-		std::unique_ptr<Model> m_LightModel;
+		std::unique_ptr<RenderObj> m_CubeModel;
+		std::unique_ptr<RenderObj> m_LightModel;
 
 	public:
 		TestLight();
