@@ -13,7 +13,7 @@ public:
 	std::unique_ptr<Shader> ModelShader;
 
 	RenderObj(string shaderPath, VertexBufferLayout layout, float vertices[], unsigned int vertexLength, unsigned int indices[], unsigned int indexLength, string texturePath[], unsigned int textureLength);
-	RenderObj(string vertexShader, string fragPath, VertexBufferLayout layout, float vertices[], unsigned int vertexLength, unsigned int indices[], unsigned int indexLength, string texturePath[], unsigned int textureLength);
+	RenderObj(string vertexPath, string fragPath, VertexBufferLayout layout, float vertices[], unsigned int vertexLength, unsigned int indices[], unsigned int indexLength, string texturePath[], unsigned int textureLength);
 	~RenderObj();
 };
 

@@ -8,11 +8,15 @@ namespace test
 	class TestLight : public Test
 	{
 	private:
-		bool m_GLLineMode;
-		float m_Color[4];
+		float m_DirLightColor[3];
+		float m_PointLightColor[3];
+		float m_SpotLightColor[3];
+		int m_SpecularShininess;
 		float m_RotateAngle;
-		float m_LightOffset[2];
-		float m_DirectionLight[3];
+		float m_LightRatio[4];
+		float m_DirLightPos[3];
+		float m_PointLightPos[3];
+		float m_SpotLightPos[3];
 
 		std::unique_ptr<RenderObj> m_CubeModel;
 		std::unique_ptr<RenderObj> m_LightModel;
@@ -27,5 +31,6 @@ namespace test
 		void OnProcessInput(int keyCode, float deltaTime) override;
 		void OnMouseMove(float xPos, float yPos) override;
 		void OnScrollMove(float xOffset, float yOffset) override;
+		void OnCameraOrthographicChange(bool isOrthographic) override;
 	};
 }

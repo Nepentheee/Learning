@@ -22,8 +22,8 @@ void GLClearError();
 
 bool GLLogCall(const char* function, const char* file, int line);
 
-const int ScreenWidth = 800;
-const int ScreenHeight = 600;
+const int ScreenWidth = 1290;
+const int ScreenHeight = 960;
 const string BasicShaderPath = "Resources/Shaders/Basic.shader";
 const string LightCasterShaderPath = "Resources/Shaders/LightCaster.shader";
 const string BatchRenderShaderPath = "Resources/Shaders/BatchRender.shader";

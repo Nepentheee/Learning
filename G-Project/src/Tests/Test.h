@@ -32,6 +32,7 @@ namespace test
 		virtual void OnProcessInput(int keyCode, float deltaTime) {}
 		virtual void OnMouseMove(float xPos, float yPos) {}
 		virtual void OnScrollMove(float xOffset, float yOffset) {}
+		virtual void OnCameraOrthographicChange(bool isOrthographic) {}
 	};
 
 	class TestMenu: public Test

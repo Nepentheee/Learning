@@ -13,8 +13,10 @@ out vec2 v_Texcoord;
 
 void main()
 {
-	gl_Position = u_MVP * vec4(position, 1);
-	v_fragPos = vec3(u_Model * vec4(position, 1));
 	v_Texcoord = texcoord;
-	v_normal = normal;
+	v_fragPos = vec3(u_Model * vec4(position, 1.0));
+//	v_normal = vec3(u_Model * vec4(normal, 0.0)); // 消除位移影响
+	v_normal = mat3(transpose(inverse(u_Model))) * normal; // 法线矩阵
+
+	gl_Position = u_MVP * vec4(position, 1);
 };

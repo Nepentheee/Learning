@@ -70,47 +70,76 @@ void Shader::Bind() const
 
 void Shader::SetBool(const string& name, bool value)
 {
-	glUniform1i(glGetUniformLocation(m_RenderID, name.c_str()), (int)value);
+	glUniform1i(GetUniformLocaton(m_RenderID, name.c_str()), (int)value);
 }
 
 void Shader::SetUnitform1i(const string& name, int value)
 {
-	glUniform1i(glGetUniformLocation(m_RenderID, name.c_str()), value);
+	glUniform1i(GetUniformLocaton(m_RenderID, name.c_str()), value);
 }
 
 void Shader::SetUniform1f(const string& name, float v1)
 {
-	glUniform1f(glGetUniformLocation(m_RenderID, name.c_str()), v1);
+	glUniform1f(GetUniformLocaton(m_RenderID, name.c_str()), v1);
 }
 
 void Shader::SetUniform3f(const string& name, glm::uvec3 value)
 {
-	glUniform3f(glGetUniformLocation(m_RenderID, name.c_str()), value.x, value.y, value.z);
+	glUniform3f(GetUniformLocaton(m_RenderID, name.c_str()), value.x, value.y, value.z);
 }
 
 void Shader::SetUniform3f(const string& name, float v1, float v2, float v3)
 {
-	glUniform3f(glGetUniformLocation(m_RenderID, name.c_str()), v1, v2, v3);
+	glUniform3f(GetUniformLocaton(m_RenderID, name.c_str()), v1, v2, v3);
+}
+
+void Shader::SetUniform3f(const string& name, float floatArray[])
+{
+	glUniform3f(GetUniformLocaton(m_RenderID, name.c_str()), floatArray[0], floatArray[1], floatArray[2]);
 }
 
 void Shader::SetUniform4f(const string& name, glm::uvec4 value)
 {
-	glUniform4f(glGetUniformLocation(m_RenderID, name.c_str()), value.x, value.y, value.z, value.w);
+	glUniform4f(GetUniformLocaton(m_RenderID, name.c_str()), value.x, value.y, value.z, value.w);
 }
 
 void Shader::SetUniform4f(const string& name, float v1, float v2, float v3, float v4)
 {
-	glUniform4f(glGetUniformLocation(m_RenderID, name.c_str()), v1, v2, v3, v4);
+	glUniform4f(GetUniformLocaton(m_RenderID, name.c_str()), v1, v2, v3, v4);
+}
+
+
+void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& matrix)
+{
+	glUniformMatrix3fv(GetUniformLocaton(m_RenderID, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
 }
 
 void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
 {
-	glUniformMatrix4fv(glGetUniformLocation(m_RenderID, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
+	glUniformMatrix4fv(GetUniformLocaton(m_RenderID, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
 }
 
 void Shader::SetUniform1iv(const std::string& name, int count, int* value)
 {
-	glUniform1iv(glGetUniformLocation(m_RenderID, name.c_str()), count, value);
+	glUniform1iv(GetUniformLocaton(m_RenderID, name.c_str()), count, value);
+}
+
+int Shader::GetUniformLocaton(unsigned int renderID, const std::string & name)
+{
+	auto it = m_UniformMap.find(name);
+	if (it == m_UniformMap.end())
+	{
+		int id = glGetUniformLocation(renderID, name.c_str());
+		if (id == -1)
+		{
+			cout << "GetUniformValue Fail " << name << endl;
+		}
+
+		m_UniformMap[name] = id;
+		return id;
+	}
+
+	return it->second;
 }
 
 inline void Shader::GetShaderCodeFromFile(const char* path, string& vectexCode, string& fragmentCode)

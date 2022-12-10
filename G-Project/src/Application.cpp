@@ -89,7 +89,7 @@ int main(void)
 	Log("Version: " + string(glfwGetVersionString()));
 
 	/* Create a windowed mode window and its OpenGL context */
-	GLFWwindow* window = glfwCreateWindow(960, 640, "Hello World", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(ScreenWidth, ScreenHeight, "Hello World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -152,6 +152,8 @@ int main(void)
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIll);
 
 	float lastTime = 0.0f;
+	bool glLineMode = false;
+	bool isOrthographic = false;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -172,10 +174,36 @@ int main(void)
 			currentTest->OnUpdate(0.0f);
 			currentTest->OnRender();
 			ImGui::Begin("Test");
+
+			if (ImGui::RadioButton("WareFrame: GL_LINE", glLineMode))
+			{
+				glLineMode = true;
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+
+			if (ImGui::RadioButton("WareFrame: GL_FIll", !glLineMode))
+			{
+				glLineMode = false;
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+
+			if (ImGui::RadioButton("Orthographic", isOrthographic))
+			{
+				isOrthographic = true;
+				currentTest->OnCameraOrthographicChange(isOrthographic);
+			}
+
+			if (ImGui::RadioButton("Perspective", !isOrthographic))
+			{
+				isOrthographic = false;
+				currentTest->OnCameraOrthographicChange(isOrthographic);
+			}
+
 			if (currentTest != testMenu && ImGui::Button("<-"))
 			{
 				delete currentTest;
 				currentTest = testMenu;
+				isOrthographic = false;
 			}
 			currentTest->OnImGuiRender();
 			ImGui::End();
