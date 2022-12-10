@@ -5,7 +5,7 @@
 
 namespace test
 {
-	TestCamera::TestCamera() : m_RotateAngle(0), m_GLLineMode(false), m_Color{ 0.2f, 0.3f, 0.8f, 1.0f }
+	TestCamera::TestCamera() : m_RotateAngle(0), m_Color{ 0.2f, 0.3f, 0.8f, 1.0f }
 	{
 		float value = 1.0f;
 		//float vertices[] = {
@@ -106,6 +106,7 @@ namespace test
 		glm::mat4 proj = m_Camera->GetProjectMatrix();
 		glm::mat4 mvp = proj * view * model;
 
+		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 		m_Shader->SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
 
@@ -117,28 +118,6 @@ namespace test
 		ImGui::Text("Fov %f", m_Camera->GetFov());
 		ImGui::ColorEdit4("ClearColor", m_Color);
 		ImGui::SliderFloat("m_RotateAngle", &m_RotateAngle, -360, 360);
-
-		if (ImGui::RadioButton("Orthographic", m_Camera->IsOrthographic()))
-		{
-			m_Camera->SetOrthographic(true);
-		}
-
-		if (ImGui::RadioButton("Perspective", !m_Camera->IsOrthographic()))
-		{
-			m_Camera->SetOrthographic(false);
-		}
-
-		if (ImGui::RadioButton("WareFrame: GL_LINE", m_GLLineMode))
-		{
-			m_GLLineMode = true;
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-
-		if (ImGui::RadioButton("WareFrame: GL_FIll", !m_GLLineMode))
-		{
-			m_GLLineMode = false;
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
 
 		// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
@@ -156,5 +135,10 @@ namespace test
 	void TestCamera::OnScrollMove(float xOffset, float yOffset)
 	{
 		m_Camera->ProcessScrollMove(xOffset, yOffset);
+	}
+
+	void TestCamera::OnCameraOrthographicChange(bool isOrthographic)
+	{
+		m_Camera->SetOrthographic(isOrthographic);
 	}
 }

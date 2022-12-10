@@ -25,6 +25,14 @@ using namespace std;
 float deltaTime = 0.0f;
 test::Test* currentTest = nullptr;
 
+enum FlagType
+{
+	DrawMode,
+	CameraMode,
+	DepthTest,
+	FaceCulling,
+};
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -71,6 +79,48 @@ void scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
 void ChangeInterger(int &a)
 {
 	a = 2;
+}
+
+void DrawButton(FlagType type, const string& trueName, const string& falseName, bool& flag)
+{
+	if (ImGui::RadioButton((flag ? trueName : falseName).c_str(), false))
+	{
+		flag = !flag;
+		switch (type)
+		{
+		case CameraMode: currentTest->OnCameraOrthographicChange(flag); break;
+		case DrawMode:
+		{
+			if (flag)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		break;
+		case DepthTest:
+		{
+			if (flag)
+				glEnable(GL_DEPTH_TEST);
+			else
+				glDisable(GL_DEPTH_TEST);
+		}
+		break;
+		case FaceCulling:
+		{
+			if (flag)
+			{
+				glEnable(GL_CULL_FACE);
+				glCullFace(GL_BACK);
+				glFrontFace(GL_CW);
+			}
+			else
+			{
+				glDisable(GL_CULL_FACE);
+			}
+		}
+		break;
+		}
+	}
 }
 
 int main(void)
@@ -154,6 +204,9 @@ int main(void)
 	float lastTime = 0.0f;
 	bool glLineMode = false;
 	bool isOrthographic = false;
+	bool enableDepthTest = true;
+	bool enableFaceCulling = false;
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -175,29 +228,10 @@ int main(void)
 			currentTest->OnRender();
 			ImGui::Begin("Test");
 
-			if (ImGui::RadioButton("WareFrame: GL_LINE", glLineMode))
-			{
-				glLineMode = true;
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			}
-
-			if (ImGui::RadioButton("WareFrame: GL_FIll", !glLineMode))
-			{
-				glLineMode = false;
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-
-			if (ImGui::RadioButton("Orthographic", isOrthographic))
-			{
-				isOrthographic = true;
-				currentTest->OnCameraOrthographicChange(isOrthographic);
-			}
-
-			if (ImGui::RadioButton("Perspective", !isOrthographic))
-			{
-				isOrthographic = false;
-				currentTest->OnCameraOrthographicChange(isOrthographic);
-			}
+			DrawButton(DrawMode, "GL_LINE", "GL_FIll", glLineMode);
+			DrawButton(CameraMode, "Orthographic", "Perspective", isOrthographic);
+			DrawButton(DepthTest, "EnableDepthTest", "DisableDepthTest", enableDepthTest);
+			DrawButton(FaceCulling, "EnableFaceCulling", "DisableEnableFaceCulling", enableFaceCulling);
 
 			if (currentTest != testMenu && ImGui::Button("<-"))
 			{

@@ -17,6 +17,8 @@ namespace test
 		float m_DirLightPos[3];
 		float m_PointLightPos[3];
 		float m_SpotLightPos[3];
+		float m_TestCubePos1[3];
+		float m_TestCubePos2[3];
 
 		std::unique_ptr<RenderObj> m_CubeModel;
 		std::unique_ptr<RenderObj> m_LightModel;

@@ -6,14 +6,16 @@
 namespace test
 {
 	TestLight::TestLight() :
-		m_RotateAngle(90), m_SpecularShininess(256),
+		m_RotateAngle(45), m_SpecularShininess(256),
 		m_LightRatio{ 0.1f, 0.4f, 1.0f },
 		m_DirLightColor{ 1.0f, 0.0f, 0.0f },
 		m_PointLightColor{ 0.0f, 1.0f, 0.0f },
 		m_SpotLightColor{ 0.0f, 0.0f, 1.0f },
 		m_DirLightPos{ -2.0f, 1.5f, 1.0f },
 		m_PointLightPos{ 0.0f, 0.0f, 4.0f },
-		m_SpotLightPos{ 2.0f, 1.0f, 1.0f }
+		m_SpotLightPos { 2.0f, 1.0f, 1.0f },
+		m_TestCubePos1{ 0.0f, 0.5f, 0.0f },
+		m_TestCubePos2{ 0.0f, -0.5f, 0.0f }
 	{
 		float vertices[] = {
 			// positions          // normals           // texture coords
@@ -75,21 +77,23 @@ namespace test
 		layout.Push<float>(2);
 
 		m_LightModel = std::make_unique<RenderObj>(
-			LightCasterShaderPath, 
+			LightCasterShaderPath,
 			layout,
-			vertices, sizeof(vertices), 
-			indices, sizeof(indices), 
+			vertices, sizeof(vertices),
+			indices, sizeof(indices),
 			nullptr, 0);
 
 		m_CubeModel = std::make_unique<RenderObj>(
 			LightingVertexShaderPath, LightingFragShaderPath,
 			layout,
-			vertices, sizeof(vertices), 
-			indices, sizeof(indices), 
-			new string[] { Testure1Path, DiffuseMapPath, SpecularMap }, 3);
-		
-		m_Camera = std::make_unique<Camera>();
+			vertices, sizeof(vertices),
+			indices, sizeof(indices),
+			new string[]{ Testure1Path, DiffuseMapPath, SpecularMap }, 3);
+
 		m_Renderer = std::make_unique<Renderer>();
+
+		m_Camera = std::make_unique<Camera>();
+		m_Camera->SetFov(80);
 	}
 
 	TestLight::~TestLight()
@@ -104,9 +108,12 @@ namespace test
 	{
 		m_Renderer->Clear();
 
+		glDisable(GL_STENCIL_TEST);
+		glEnable(GL_DEPTH_TEST);
+
 		glm::mat4 view = m_Camera->GetViewMatrix();
 		glm::mat4 proj = m_Camera->GetProjectMatrix();
-
+		
 		// Draw Light
 		{
 			// Direction Light
@@ -120,7 +127,7 @@ namespace test
 
 				m_Renderer->Draw(*m_LightModel->VAO, *m_LightModel->IBO, *m_LightModel->ModelShader);
 			}
-			
+
 			// Point Light
 			{
 				glm::mat4 plModel = glm::translate(glm::mat4(1), glm::vec3(m_PointLightPos[0], m_PointLightPos[1], m_PointLightPos[2])) * glm::scale(glm::mat4(1), glm::vec3(0.3f));
@@ -132,7 +139,7 @@ namespace test
 
 				m_Renderer->Draw(*m_LightModel->VAO, *m_LightModel->IBO, *m_LightModel->ModelShader);
 			}
-			
+
 			// Spot Light
 			{
 				glm::mat4 splModel = glm::translate(glm::mat4(1), glm::vec3(m_SpotLightPos[0], m_SpotLightPos[1], m_SpotLightPos[2])) * glm::scale(glm::mat4(1), glm::vec3(0.3f));
@@ -146,7 +153,18 @@ namespace test
 			}
 		}
 
-		// Draw Cube
+		// test Cube 1
+		{
+			glm::mat4 t1Model = glm::translate(glm::mat4(1), glm::vec3(m_TestCubePos1[0], m_TestCubePos1[1], m_TestCubePos1[2])) * glm::scale(glm::mat4(1), glm::vec3(0.3f));
+
+			m_LightModel->ModelShader->Bind();
+			m_LightModel->ModelShader->SetUniformMat4f("u_MVP", proj * view * t1Model);
+			m_LightModel->ModelShader->SetUniform3f("u_Color", glm::vec3(1, 0, 0));
+
+			m_Renderer->Draw(*m_LightModel->VAO, *m_LightModel->IBO, *m_LightModel->ModelShader);
+		}
+
+		// Draw Lighting Cube
 		{
 			glm::mat4 model = glm::mat4(1);
 			model = glm::translate(model, glm::vec3(0, 0, 0));
@@ -198,20 +216,62 @@ namespace test
 			m_Renderer->Draw(*m_CubeModel->VAO, *m_CubeModel->IBO, *m_CubeModel->ModelShader);
 		}
 		
+		// 开启模版测试
+		glEnable(GL_STENCIL_TEST);
+		// 深度和模板都通过测试则替换
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		// 总是写入1
+		glStencilFunc(GL_ALWAYS, 1, 0xff);
+		glStencilMask(0xFF);
+		
+		// test Cube 2
+		{
+			glm::mat4 t2Model = glm::translate(glm::mat4(1), glm::vec3(m_TestCubePos2[0], m_TestCubePos2[1], m_TestCubePos2[2])) * glm::scale(glm::mat4(1), glm::vec3(0.3f));
+
+			m_LightModel->ModelShader->Bind();
+			m_LightModel->ModelShader->SetUniformMat4f("u_MVP", proj* view* t2Model);
+			m_LightModel->ModelShader->SetUniform3f("u_Color", glm::vec3(0, 0, 1));
+
+			m_Renderer->Draw(*m_LightModel->VAO, *m_LightModel->IBO, *m_LightModel->ModelShader);
+		}
+
+		// 关闭深度测试、关闭写入，缓存buff≠1的才绘制
+		glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+
+		{
+			glm::mat4 tScale2Model = glm::translate(glm::mat4(1), glm::vec3(m_TestCubePos2[0], m_TestCubePos2[1], m_TestCubePos2[2])) * glm::scale(glm::mat4(1), glm::vec3(0.36f));
+
+			m_LightModel->ModelShader->Bind();
+			m_LightModel->ModelShader->SetUniformMat4f("u_MVP", proj * view * tScale2Model);
+			m_LightModel->ModelShader->SetUniform3f("u_Color", glm::vec3(1, 0, 0));
+
+			m_Renderer->Draw(*m_LightModel->VAO, *m_LightModel->IBO, *m_LightModel->ModelShader);
+		}
+
+		glStencilMask(0xFF);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void TestLight::OnImGuiRender()
 	{
+		// 光照参数
+		/*{
+			ImGui::ColorEdit3("DirLight Color", m_DirLightColor);
+			ImGui::ColorEdit3("PointLight Color", m_PointLightColor);
+			ImGui::ColorEdit3("SpotLight Color", m_SpotLightColor);
+			ImGui::SliderFloat3("ambient/diffuse/specular", m_LightRatio, 0, 1);
+			ImGui::SliderFloat3("DirLight Position", m_DirLightPos, -3, 4, "%.2f");
+			ImGui::SliderFloat3("PointLight Position", m_PointLightPos, -3, 4, "%.2f");
+			ImGui::SliderFloat3("SpotLight Position", m_SpotLightPos, -3, 4, "%.2f");
+			ImGui::SliderInt("specular shininess", &m_SpecularShininess, 32, 256);
+		}*/
+
 		ImGui::Text("Fov %f", m_Camera->GetFov());
-		ImGui::ColorEdit3("DirLight Color", m_DirLightColor);
-		ImGui::ColorEdit3("PointLight Color", m_PointLightColor);
-		ImGui::ColorEdit3("SpotLight Color", m_SpotLightColor);
-		ImGui::SliderFloat("Model RotateAngle", &m_RotateAngle, -360, 360);
-		ImGui::SliderFloat3("ambient/diffuse/specular", m_LightRatio, 0, 1);
-		ImGui::SliderFloat3("DirLight Position", m_DirLightPos, -3, 4, "%.2f");
-		ImGui::SliderFloat3("PointLight Position", m_PointLightPos, -3, 4, "%.2f");
-		ImGui::SliderFloat3("SpotLight Position", m_SpotLightPos, -3, 4, "%.2f");
-		ImGui::SliderInt("specular shininess", &m_SpecularShininess, 32, 256);
+		ImGui::SliderFloat("Model RotateAngle", &m_RotateAngle, -180, 180);
+		ImGui::SliderFloat3("1-TestCube Position", m_TestCubePos1, -3, 4, "%.2f");
+		ImGui::SliderFloat3("2-TestCube Position", m_TestCubePos2, -3, 4, "%.2f");
 	}
 
 	void TestLight::OnProcessInput(int keyCode, float deltaTime)

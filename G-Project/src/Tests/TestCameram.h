@@ -10,7 +10,6 @@ namespace test
 	private:
 		float m_Color[4];
 		float m_RotateAngle;
-		bool m_GLLineMode;
 	public:
 		TestCamera();
 		~TestCamera();
@@ -21,5 +20,6 @@ namespace test
 		void OnProcessInput(int keyCode, float deltaTime) override;
 		void OnMouseMove(float xPos, float yPos) override;
 		void OnScrollMove(float xOffset, float yOffset) override;
+		void OnCameraOrthographicChange(bool isOrthographic) override;
 	};
 }

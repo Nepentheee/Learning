@@ -40,7 +40,7 @@ namespace test
 		m_Shader->SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
 		m_Shader->SetUniform1f("u_Texture", 0);
 
-		m_Texture = std::make_unique<Texture>(Testure1Path);
+		m_Texture = std::make_unique<Texture>(BlendWindowPath);
 		m_Texture->Bind();
 
 		m_Renderer = std::make_unique<Renderer>();
@@ -64,6 +64,7 @@ namespace test
 
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
+			m_Shader->SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
 
 			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
@@ -74,6 +75,7 @@ namespace test
 
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
+			m_Shader->SetUniform4f("u_Color", 0.0f, 0.0f, 1.0f, 1.0f);
 
 			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
@@ -81,8 +83,10 @@ namespace test
 
 	void TestTexture2D::OnImGuiRender()
 	{
-		ImGui::SliderFloat3("m_TranslationA", &m_TranslationA.x, 0.0f, 960.0f);
-		ImGui::SliderFloat3("m_TranslationB", &m_TranslationB.x, 0.0f, 960.0f);
+		ImGui::SliderFloat2("m_TranslationA", &m_TranslationA.x, 0.0f, 960.0f);
+		ImGui::SliderFloat2("m_TranslationB", &m_TranslationB.x, 0.0f, 960.0f);
+		ImGui::SliderFloat("m_TranslationA-Z", &m_TranslationA.z, -1.0f, 1.0f);
+
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }

@@ -33,6 +33,8 @@ const string Testure1Path = "Resources/textures/IMG_1223.JPG";
 const string Testure2Path = "Resources/textures/IMG_1421.JPG";
 const string DiffuseMapPath = "Resources/textures/diffuseMap.png";
 const string SpecularMap = "Resources/textures/specularMap.png";
+const string GrassPath = "Resources/textures/grass.png";
+const string BlendWindowPath = "Resources/textures/blendingWindow.png";
 
 class Renderer
 {
