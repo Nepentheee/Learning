@@ -2,10 +2,12 @@
 
 RenderObj::RenderObj(
 	string shaderPath, VertexBufferLayout layout,
-	float vertices[], unsigned int vertexLength, 
-	unsigned int indices[], unsigned int indexLength, 
+	const float vertices[], unsigned int vertexLength, 
+	const unsigned int indices[], unsigned int indexLength,
 	string texturePaths[], unsigned int textureLength)
 {
+	Log("VertexLength " << vertexLength);
+	Log("indexLength " << indexLength);
 	VertexBuffer* vertexBuffer = new VertexBuffer(vertices, vertexLength);
 
 	VAO = std::make_unique<VertexArray>();
@@ -18,8 +20,12 @@ RenderObj::RenderObj(
 	{
 		for (int i = 0; i < textureLength; ++i)
 		{
-			Texture* texture = new Texture(texturePaths[i]);
-			texture->Bind(i);
+			m_Textures[i] = new Texture(texturePaths[i]);
+		}
+
+		for (int i = 0; i < textureLength; ++i)
+		{
+			m_Textures[i]->Bind(i);
 		}
 	}
 }
@@ -27,8 +33,8 @@ RenderObj::RenderObj(
 RenderObj::RenderObj(
 	string vertexPath, string fragPath,
 	VertexBufferLayout layout,
-	float vertices[], unsigned int vertexLength,
-	unsigned int indices[], unsigned int indexLength,
+	const float vertices[], unsigned int vertexLength,
+	const unsigned int indices[], unsigned int indexLength,
 	string texturePaths[], unsigned int textureLength)
 {
 	VertexBuffer* vertexBuffer = new VertexBuffer(vertices, vertexLength);
@@ -41,16 +47,14 @@ RenderObj::RenderObj(
 
 	if (textureLength > 0)
 	{
-		Texture* textures[10];
-
 		for (int i = 0; i < textureLength; ++i)
 		{
-			textures[i] = new Texture(texturePaths[i]);
+			m_Textures[i] = new Texture(texturePaths[i]);
 		}
 
 		for (int i = 0; i < textureLength; ++i)
 		{
-			textures[i]->Bind(i);
+			m_Textures[i]->Bind(i);
 		}
 	}
 }
@@ -59,3 +63,17 @@ RenderObj::~RenderObj()
 {
 }
 
+void RenderObj::BindTextures()
+{
+	for (int i = 0; i < 16; ++i)
+	{
+		if (m_Textures[i] != nullptr)
+		{
+			m_Textures[i]->Bind(i);
+		}
+		else
+		{
+			break;
+		}
+	}
+}

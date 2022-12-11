@@ -20,60 +20,7 @@ namespace test
 			2, 3, 0
 		};*/
 
-		float vertices[] = {
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-		};
-
-		unsigned int indices[] = {
-			 0,  1,  2,  3,  4,  5,
-			 6,  7,  8,  9, 10, 11,
-			12, 13, 14, 15, 16, 17,
-			18, 19, 20, 21, 22, 23,
-			24, 25, 26, 27, 28, 29,
-			30, 31, 32, 33, 34, 35,
-		};
-
-		m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(CubeVertices, CubeVertexSize);
 
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
@@ -82,7 +29,7 @@ namespace test
 		m_VAO = std::make_unique<VertexArray>();
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
 
-		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, sizeof(indices) / sizeof(unsigned int));
+		m_IndexBuffer = std::make_unique<IndexBuffer>(CubeIndices, CubeIndexSize / sizeof(unsigned int));
 		m_Shader = std::make_unique<Shader>(BasicShaderPath);
 		m_Texture = std::make_unique<Texture>(Testure1Path);
 		m_Renderer = std::make_unique<Renderer>();
@@ -108,7 +55,7 @@ namespace test
 
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
-		m_Shader->SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
+		m_Shader->SetUniform4f("u_Color", 1, 1, 1, 1);
 
 		m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 	}

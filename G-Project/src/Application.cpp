@@ -17,6 +17,8 @@
 #include "Tests/TestBatchRender.h"
 #include "Tests/TestCameram.h"
 #include "Tests/TestLight.h"
+#include "Tests/TestFrameBuffer.h"
+#include "Tests/TestCubeMap.h"
 
 #include "Application.h"
 
@@ -111,7 +113,6 @@ void DrawButton(FlagType type, const string& trueName, const string& falseName, 
 			{
 				glEnable(GL_CULL_FACE);
 				glCullFace(GL_BACK);
-				glFrontFace(GL_CW);
 			}
 			else
 			{
@@ -196,6 +197,8 @@ int main(void)
 	testMenu->RegisterTest<test::TestBatchRender>("Batch Render");
 	testMenu->RegisterTest<test::TestCamera>("Test Camera");
 	testMenu->RegisterTest<test::TestLight>("Test Light");
+	testMenu->RegisterTest<test::TestFrameBuffer>("Test FrameBuffer");
+	testMenu->RegisterTest<test::TestCubeMap>("Test CubeMap");
 
 	// Wire frame Mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -226,6 +229,7 @@ int main(void)
 		{
 			currentTest->OnUpdate(0.0f);
 			currentTest->OnRender();
+
 			ImGui::Begin("Test");
 
 			DrawButton(DrawMode, "GL_LINE", "GL_FIll", glLineMode);

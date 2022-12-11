@@ -18,6 +18,8 @@ public:
 	~Shader();
 
 	void Bind() const;
+	void BindTexture(unsigned int slotID, unsigned int textureID) const;
+	void BindCubeMapTexture(unsigned int textureID) const;
 	void SetBool(const string& name, bool value);
 	void SetUnitform1i(const string& name, int value);
 	void SetUniform3f(const string& name, glm::uvec3 value);

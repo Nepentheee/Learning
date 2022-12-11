@@ -68,6 +68,18 @@ void Shader::Bind() const
 	glUseProgram(m_RenderID);
 }
 
+void Shader::BindTexture(unsigned int slotID, unsigned int textureID) const
+{
+	glActiveTexture(GL_TEXTURE0 + slotID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void Shader::BindCubeMapTexture(unsigned int textureID) const
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+}
+
 void Shader::SetBool(const string& name, bool value)
 {
 	glUniform1i(GetUniformLocaton(m_RenderID, name.c_str()), (int)value);
@@ -107,7 +119,6 @@ void Shader::SetUniform4f(const string& name, float v1, float v2, float v3, floa
 {
 	glUniform4f(GetUniformLocaton(m_RenderID, name.c_str()), v1, v2, v3, v4);
 }
-
 
 void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& matrix)
 {

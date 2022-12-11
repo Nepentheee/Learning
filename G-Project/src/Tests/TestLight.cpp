@@ -252,6 +252,7 @@ namespace test
 
 		glStencilMask(0xFF);
 		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_STENCIL_TEST);
 	}
 
 	void TestLight::OnImGuiRender()
